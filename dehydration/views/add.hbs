@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+{{> head}}
+<body>
+<div class="phone">
+  <div class="screen">
+    <!-- Скроллящаяся область с формой -->
+    <form class="detail-body" action="/add" method="post" onsubmit="return false;">
+
+      <!-- Название -->
+      <input
+        type="text"
+        class="detail-input"
+        name="title"
+        placeholder="Название"
+        value="{{draft.title}}"
+      />
+
+      <!-- Кнопки добавления медиа -->
+      <button type="button" class="media-btn">
+        <span>Видео</span>
+        <span class="media-plus">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </button>
+
+      <button type="button" class="media-btn">
+        <span>Фото</span>
+        <span class="media-plus">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+      </button>
+
+      <!-- Описание -->
+      <textarea
+        class="detail-input detail-textarea"
+        name="description"
+        placeholder="Описание"
+      >{{draft.description}}</textarea>
+
+      <!-- Показатель -->
+      <input
+        type="text"
+        class="detail-input"
+        name="power"
+        placeholder="Показатель"
+        value="{{draft.power}}"
+      />
+
+      <!-- Цена -->
+      <input
+        type="text"
+        class="detail-input"
+        name="price"
+        placeholder="Цена"
+        value="{{draft.price}}"
+      />
+
+    </form>
+
+    <!-- Кнопка "Добавить" -->
+    <div class="add-bar">
+      <button type="button" class="detail-btn">
+        Добавить
+      </button>
+    </div>
+
+  </div>
+
+  {{> nav}}
+</div>
+</body>
+</html>

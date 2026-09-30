@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+{{> head}}
+<body>
+<div class="phone">
+  <div class="screen">
+
+    <!-- Фильтры — редактируемые поля -->
+    <form class="filters" method="get" action="/dehydration/signs">
+      <input
+        type="number"
+        class="filter"
+        name="min"
+        placeholder="Цена от"
+        value="{{filters.min}}"
+        min="0"
+      />
+      <input
+        type="number"
+        class="filter"
+        name="max"
+        placeholder="Цена до"
+        value="{{filters.max}}"
+        min="0"
+      />
+      <button type="submit" class="filter-btn" aria-label="Применить фильтр">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </form>
+
+    <!-- Сетка карточек -->
+    <div class="cards-grid">
+      {{#each signs}}
+        <a class="card {{#if this.tall}}tall{{/if}}" href="/dehydration/feed/{{this.id}}">
+          <div class="card-img" style="background-image:url('{{this.imgSrc}}')">
+            <div class="card-badges">
+              <span class="badge price">{{this.price}}₽</span>
+              <span class="badge like">
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 21s-8-5.5-8-11a5 5 0 0110-1 5 5 0 0110 1c0 5.5-8 11-8 11z"/>
+                </svg>
+                {{this.likes}}
+              </span>
+            </div>
+          </div>
+          <div class="card-title">{{this.title}}</div>
+        </a>
+      {{else}}
+        <p class="cards-empty">Ничего не найдено</p>
+      {{/each}}
+    </div>
+
+  </div>
+
+  {{> nav}}
+</div>
+</body>
+</html>

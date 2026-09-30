@@ -1,0 +1,561 @@
+/* ============================================================
+   RESET
+   ============================================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  background: #1a1a1a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ============================================================
+   ТЕЛЕФОН
+   ============================================================ */
+.phone {
+  width: 360px;
+  height: 780px;
+  background: #d9d9d9;
+  border-radius: 32px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ============================================================
+   КОНТЕНТ (общий)
+   ============================================================ */
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 12px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  min-width: 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.screen::-webkit-scrollbar {
+  display: none;
+}
+
+/* Модификатор: полноэкранный контент (только для feed) */
+.screen--flush {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* ============================================================
+   НИЖНЯЯ НАВИГАЦИЯ
+   ============================================================ */
+.bottom-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px 12px;
+  width: 100%;
+  box-sizing: border-box;
+  background: #9e9e9e;
+  border-radius: 0 0 32px 32px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  flex: 1;
+  height: 42px;
+  background: #fff;
+  border-radius: 24px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.15s;
+  text-decoration: none;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-btn:hover {
+  background: #f0f0f0;
+}
+
+.nav-btn:active {
+  transform: scale(0.96);
+}
+
+.nav-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: #1a1a1a;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ============================================================
+   PAGE 1: FEED
+   ============================================================ */
+.sign-card {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+
+.sign-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.sign-bottom {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.sign-info {
+  flex: 1;
+  background: rgba(217, 217, 217, 0.92);
+  border-radius: 14px;
+  padding: 12px 14px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.sign-info h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #1a1a1a;
+}
+
+.sign-info p {
+  font-size: 12px;
+  color: #333;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.sign-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: #9e9e9e;
+  color: #1a1a1a;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.sign-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  width: 44px;
+  padding: 0;
+  background: #d9d9d9;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition:
+    background 0.2s,
+    transform 0.15s;
+  text-decoration: none;
+  color: inherit;
+  line-height: 0;
+  box-sizing: border-box;
+}
+
+.icon-btn.heart {
+  flex: 0 0 auto;
+  height: 44px;
+  border-radius: 50%;
+}
+
+.icon-btn.arrow {
+  flex: 1 1 auto;
+  min-height: 44px;
+  border-radius: 22px;
+}
+
+.icon-btn:hover {
+  background: #cfcfcf;
+}
+
+.icon-btn:active {
+  transform: scale(0.96);
+}
+
+.icon-btn svg {
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.icon-btn.heart svg {
+  fill: #1ca7d2;
+  stroke: none;
+}
+
+.icon-btn.arrow svg {
+  stroke: #1ca7d2;
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ============================================================
+   PAGE 2: ФИЛЬТРЫ + СЕТКА
+   ============================================================ */
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: stretch;
+  position: sticky;
+  top: -12px; /* компенсируем padding-top у .screen */
+  z-index: 10;
+  padding: 12px 0 4px;
+  background: #d9d9d9;
+}
+
+.filter {
+  flex: 1;
+  min-width: 0;
+  background: #9e9e9e;
+  border: 2px solid transparent;
+  border-radius: 18px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #000;
+  font-weight: 500;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.filter::placeholder {
+  color: #fff;
+  opacity: 1;
+}
+
+.filter:focus {
+  border-color: #1ca7d2;
+}
+
+.filter::-webkit-outer-spin-button,
+.filter::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.filter-btn {
+  width: 44px;
+  flex-shrink: 0;
+  background: #d9d9d9;
+  border: 2px solid #1ca7d2;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.15s;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.filter-btn:hover {
+  background: #cfcfcf;
+}
+
+.filter-btn:active {
+  transform: scale(0.96);
+}
+
+.filter-btn svg {
+  width: 20px;
+  height: 20px;
+  stroke: #1ca7d2;
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  display: block;
+}
+
+/* Сетка карточек — одно длинное полотно */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Карточка — обёртка по содержимому */
+.card {
+  background: #d9d9d9;
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+
+/* Картинка — пропорция 9:16 */
+.card-img {
+  aspect-ratio: 9 / 16;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-color: #9e9e9e;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Высокая карточка — картинка в 2 раза выше */
+.card.tall .card-img {
+  aspect-ratio: 9 / 32;
+}
+
+.card-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.badge {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1ca7d2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge.like svg {
+  width: 12px;
+  height: 12px;
+  fill: #1ca7d2;
+}
+
+.card-title {
+  background: #fff;
+  text-align: center;
+  padding: 12px 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 45px;
+}
+
+.cards-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #6b6b6b;
+  font-size: 14px;
+  padding: 30px 0;
+}
+
+/* ============================================================
+   PAGE 3: ADD / ФОРМА
+   ============================================================ */
+.detail-header {
+  background: #9e9e9e;
+  border-radius: 18px;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  flex-shrink: 0;
+}
+
+.detail-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  min-height: 0;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.detail-body::-webkit-scrollbar {
+  display: none;
+}
+
+.detail-input {
+  width: 100%;
+  background: #9e9e9e;
+  border: 2px solid transparent;
+  border-radius: 18px;
+  padding: 14px 16px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #000;
+  outline: none;
+  transition: border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.detail-input::placeholder {
+  color: #fff;
+  opacity: 1;
+}
+
+.detail-input:focus {
+  border-color: #1ca7d2;
+}
+
+.detail-textarea {
+  resize: none;
+  min-height: 90px;
+  line-height: 1.3;
+}
+
+.media-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  background: #9e9e9e;
+  border: 2px solid #1ca7d2;
+  border-radius: 18px;
+  padding: 12px 14px 12px 18px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.media-btn:hover {
+  background: #8e8e8e;
+}
+
+.media-plus {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d9d9d9;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.media-plus svg {
+  width: 24px;
+  height: 24px;
+  stroke: #1ca7d2;
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+}
+
+.add-bar {
+  flex-shrink: 0;
+  padding: 4px 0 12px;
+  background: transparent;
+}
+
+.detail-btn {
+  width: 100%;
+  background: #9e9e9e;
+  border: 2px solid #1ca7d2;
+  border-radius: 18px;
+  padding: 14px;
+  font-size: 18px;
+  color: #1ca7d2;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+  font-family: inherit;
+}
+
+.detail-btn:hover {
+  background: #1ca7d2;
+  color: #fff;
+}

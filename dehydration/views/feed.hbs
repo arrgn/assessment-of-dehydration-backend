@@ -1,0 +1,54 @@
+<html lang='ru'>
+{{> head}}
+<body>
+<div class="phone">
+  <div class="screen screen--flush">
+
+    <article class="sign-card">
+      <!-- Автовоспроизведение видео -->
+      <video
+        class="sign-video"
+        src="{{vidSrc}}"
+        poster="{{imgSrc}}"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+      ></video>
+
+      <div class="sign-bottom">
+      <!-- Оверлей с данными -->
+      <div class="sign-info">
+        <h2>{{sign.title}}</h2>
+        <p>{{sign.description}}</p>
+        <div class="sign-tags">
+          <span class="tag">Показатель: {{sign.power}}</span>
+          <span class="tag">Цена: {{sign.price}} руб.</span>
+        </div>
+      </div>
+
+      <!-- Кнопки справа -->
+      <div class="sign-actions">
+        <button class="icon-btn heart" type="button" aria-label="В избранное">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path d="M12 21s-8-5.5-8-11a5 5 0 0110-1 5 5 0 0110 1c0 5.5-8 11-8 11z"/>
+          </svg>
+        </button>
+
+        <!-- Стрелка ведёт на nextUrl -->
+        <a class="icon-btn arrow" href="{{nextUrl}}" aria-label="Следующая запись">
+          <svg viewBox="0 0 24 24" width="22" height="22">
+            <path d="M12 5v14M5 12l7 7 7-7"/>
+          </svg>
+        </a>
+      </div>
+      </div>
+    </article>
+
+  </div>
+
+  {{> nav}}
+</div>
+</body>
+</html>
