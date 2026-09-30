@@ -121,7 +121,7 @@ export class DehydrationController {
       .map((sign) => ({
         ...sign,
         imgSrc: this.minIOSrc + sign.imgSrc,
-        likes: 15,
+        likes: 5 * sign.id + 2,
       }));
 
     return {
