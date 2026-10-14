@@ -1,170 +1,160 @@
-import { Controller, Get, Param, Query, Render } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  Redirect,
+  Render,
+} from '@nestjs/common';
+import { DehydrationService } from './dehydration.service';
 
 @Controller('dehydration')
 export class DehydrationController {
-  private readonly clinicalSigns = [
-    {
-      id: 0,
-      title: 'Жажда',
-      description: 'Самый первый признак дегидрации пациента',
-      dehydratingCoefficient: 8,
-      maxDehydratingCoefficient: 10,
-      vidSrc: 'thirst.mp4',
-      imgSrc: 'thirst.jpg',
-      status: 'Опубликован',
-    },
-    {
-      id: 1,
-      title: 'Эластичность кожи',
-      description:
-        'Важный параметр при оценке дегидрации. Кожная складка расправляется медленно.',
-      dehydratingCoefficient: 5,
-      maxDehydratingCoefficient: 10,
-      vidSrc: 'skin-turgor.mp4',
-      imgSrc: 'skin-turgor.jpg',
-      status: 'Опубликован',
-    },
-    {
-      id: 2,
-      title: 'Состояние глазных яблок',
-      description: 'Запавшие глазные яблоки, снижение тургора и сухость склер.',
-      dehydratingCoefficient: 6,
-      maxDehydratingCoefficient: 10,
-      vidSrc: 'sunken-eyes.mp4',
-      imgSrc: 'sunken-eyes.jpg',
-      status: 'Опубликован',
-    },
-    {
-      id: 3,
-      title: 'Диурез',
-      description:
-        'Снижение объёма выделяемой мочи, тёмный цвет и высокая концентрация.',
-      dehydratingCoefficient: 7,
-      maxDehydratingCoefficient: 10,
-      vidSrc: 'diuresis.mp4',
-      imgSrc: 'diuresis.jpg',
-      status: 'Опубликован',
-    },
-    {
-      id: 4,
-      title: 'Судороги',
-      description:
-        'Болезненные мышечные спазмы на фоне электролитных нарушений.',
-      vidSrc: 'cramps.mp4',
-      imgSrc: 'cramps.jpg',
-      status: 'Черновик',
-    },
-    {
-      id: 5,
-      title: 'Сухость слизистых',
-      description:
-        'Сухость языка, губ и ротовой полости — ранний признак обезвоживания.',
-      dehydratingCoefficient: 3,
-      maxDehydratingCoefficient: 10,
-      vidSrc: 'dry-mucosa.mp4',
-      imgSrc: 'dry-mucosa.jpg',
-      status: 'Удален',
-    },
-  ];
-
-  private readonly dehydrationLikes = [
-    { userId: 1, signId: 0 },
-    { userId: 2, signId: 0 },
-    { userId: 3, signId: 0 },
-    { userId: 1, signId: 1 },
-    { userId: 4, signId: 1 },
-    { userId: 2, signId: 2 },
-    { userId: 3, signId: 2 },
-    { userId: 4, signId: 2 },
-    { userId: 5, signId: 2 },
-    { userId: 1, signId: 3 },
-    { userId: 5, signId: 4 },
-    { userId: 2, signId: 5 },
-  ];
+  constructor(private readonly dehydrationService: DehydrationService) {}
 
   private readonly currentUserId = 1;
 
   private readonly dehydrationMinIOSrc = 'http://localhost:9000/dehydration/';
   private readonly dehydrationHost = 'http://localhost:3000/dehydration/';
 
+  private readonly defaultVidSrc = this.dehydrationMinIOSrc + 'thirst.mp4';
+  private readonly defaultImgSrc = this.dehydrationMinIOSrc + 'thirst.jpg';
+
+  private readonly stubVidSrc = 'not-uploaded.mp4';
+  private readonly stubImgSrc = 'not-uploaded.jpg';
+
+  private dehydrationMediaUrl(name: string | null, fallback: string): string {
+    return name ? this.dehydrationMinIOSrc + name : fallback;
+  }
+
   @Get('feed/:id')
   @Render('dehydrationFeed')
-  getDehydrationCardById(@Param('id') id: number) {
-    while (
-      id < this.clinicalSigns.length &&
-      this.clinicalSigns[id].status == 'Удален'
-    ) {
-      id++;
+  async getDehydrationCardById(@Param('id', ParseIntPipe) id: number) {
+    const sign = await this.dehydrationService.getActiveDehydrationSignFrom(id);
+
+    if (!sign) {
+      return {
+        nextUrl: `${this.dehydrationHost}feed/0`,
+        vidSrc: this.defaultVidSrc,
+        imgSrc: this.defaultImgSrc,
+        defaultVidSrc: this.defaultVidSrc,
+        defaultImgSrc: this.defaultImgSrc,
+      };
     }
 
-    if (id >= this.clinicalSigns.length) return null;
-
-    const sign = this.clinicalSigns[id];
-    const vidSrc = this.dehydrationMinIOSrc + sign.vidSrc;
-    const imgSrc = this.dehydrationMinIOSrc + sign.imgSrc;
-    const nextUrl = `${this.dehydrationHost}feed/${+id + 1}`;
-
-    const liked = this.dehydrationLikes.some(
-      (like) => like.signId === sign.id && like.userId === this.currentUserId,
+    const vidSrc = this.dehydrationMediaUrl(sign.vidSrc, this.defaultVidSrc);
+    const imgSrc = this.dehydrationMediaUrl(sign.imgSrc, this.defaultImgSrc);
+    const nextUrl = `${this.dehydrationHost}feed/${sign.id + 1}`;
+    const liked = await this.dehydrationService.isDehydrationSignLiked(
+      this.currentUserId,
+      sign.id,
     );
 
-    return { sign, nextUrl, vidSrc, imgSrc, liked };
+    return {
+      sign,
+      nextUrl,
+      vidSrc,
+      imgSrc,
+      liked,
+      defaultVidSrc: this.defaultVidSrc,
+      defaultImgSrc: this.defaultImgSrc,
+    };
   }
 
   @Get('add')
   @Render('dehydrationAdd')
-  getAddDehydrationCardPage() {
-    const draft = this.clinicalSigns.find((sign) => sign.status == 'Черновик');
+  async getAddDehydrationCardPage() {
+    const draft = await this.dehydrationService.getDehydrationDraft(
+      this.currentUserId,
+    );
 
     return { draft };
   }
 
+  @Post('add')
+  @Redirect('/dehydration/add')
+  async createDehydrationDraft(@Body() body: { title?: string }) {
+    const title = body.title?.trim();
+    if (!title) throw new BadRequestException('Название обязательно');
+
+    if (
+      !(await this.dehydrationService.getDehydrationDraft(this.currentUserId))
+    ) {
+      await this.dehydrationService.createDehydrationDraft(this.currentUserId, {
+        title,
+        vidSrc: this.stubVidSrc,
+        imgSrc: this.stubImgSrc,
+      });
+    }
+  }
+
+  @Post('publish')
+  @Redirect('/dehydration/signs')
+  async publishDehydrationSign(
+    @Body('id', ParseIntPipe) id: number,
+    @Body('title') title: string | undefined,
+    @Body('description') description: string | undefined,
+    @Body('dehydratingCoefficient', ParseIntPipe) coefficient: number,
+    @Body('maxDehydratingCoefficient', ParseIntPipe) maxCoefficient: number,
+  ) {
+    if (!title?.trim() || !description?.trim()) {
+      throw new BadRequestException('Заполните все поля');
+    }
+
+    await this.dehydrationService.publishDehydrationSign(
+      id,
+      this.currentUserId,
+      {
+        title: title.trim(),
+        description: description.trim(),
+        dehydratingCoefficient: coefficient,
+        maxDehydratingCoefficient: maxCoefficient,
+      },
+    );
+  }
+
+  @Post('delete/:id')
+  @Redirect('/dehydration/signs')
+  async softDeleteDehydrationSign(@Param('id', ParseIntPipe) id: number) {
+    await this.dehydrationService.softDeleteDehydrationSign(id);
+  }
+
   @Get('signs')
   @Render('dehydrationSigns')
-  getDehydrationCardsPage(
-    @Query('min') minRaw?: string,
-    @Query('max') maxRaw?: string,
+  async getDehydrationCardsPage(
+    @Query('min', new ParseIntPipe({ optional: true })) minRaw?: number,
+    @Query('max', new ParseIntPipe({ optional: true })) maxRaw?: number,
+    @Query('search') search?: string,
   ) {
-    const sliderMax = Math.max(
-      0,
-      ...this.clinicalSigns
-        .filter((sign) => sign.status !== 'Удален')
-        .map((sign) => sign.dehydratingCoefficient ?? 0),
-    );
+    const query = search?.trim();
+    const sliderMax =
+      await this.dehydrationService.getDehydrationMaxCoefficient(query);
     const clamp = (n: number) => Math.min(Math.max(n, 0), sliderMax);
-    const from = clamp(this.parseNumber(minRaw) ?? 0);
-    const to = clamp(this.parseNumber(maxRaw) ?? sliderMax);
-    // Ползунки могут быть перетянуты друг через друга — упорядочиваем значения
+    const from = clamp(minRaw ?? 0);
+    const to = clamp(maxRaw ?? sliderMax);
     const min = Math.min(from, to);
     const max = Math.max(from, to);
 
     const hasFilter = min > 0 || max < sliderMax;
+    const found = await this.dehydrationService.getDehydrationSignsWithLikes(
+      query,
+      hasFilter ? min : undefined,
+      hasFilter ? max : undefined,
+    );
 
-    const signs = this.clinicalSigns
-      .filter((sign) => sign.status !== 'Удален')
-      .filter((sign) => {
-        if (!hasFilter) return true;
-
-        if (
-          sign.dehydratingCoefficient === undefined ||
-          sign.dehydratingCoefficient === null
-        )
-          return false;
-
-        if (sign.dehydratingCoefficient < min) return false;
-        if (sign.dehydratingCoefficient > max) return false;
-
-        return true;
-      })
-      .map((sign) => ({
-        ...sign,
-        imgSrc: this.dehydrationMinIOSrc + sign.imgSrc,
-        likes: this.dehydrationLikes.filter((like) => like.signId === sign.id)
-          .length,
-      }));
+    const signs = found.map((sign) => ({
+      ...sign,
+      imgSrc: this.dehydrationMediaUrl(sign.imgSrc, this.defaultImgSrc),
+    }));
 
     return {
       signs,
+      search: query,
+      defaultImgSrc: this.defaultImgSrc,
       filters: {
         min,
         max,
@@ -173,11 +163,5 @@ export class DehydrationController {
         fillRight: sliderMax ? 100 - (max / sliderMax) * 100 : 0,
       },
     };
-  }
-
-  private parseNumber(raw?: string): number | null {
-    if (raw === undefined || raw === null || raw.trim() === '') return null;
-    const n = Number(raw);
-    return Number.isFinite(n) ? n : null;
   }
 }

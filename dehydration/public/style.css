@@ -1,6 +1,3 @@
-/* ============================================================
-   RESET
-   ============================================================ */
 * {
   margin: 0;
   padding: 0;
@@ -18,9 +15,6 @@ body {
   padding: 20px;
 }
 
-/* ============================================================
-   ТЕЛЕФОН
-   ============================================================ */
 .phone {
   width: 360px;
   height: 780px;
@@ -33,9 +27,6 @@ body {
   overflow: hidden;
 }
 
-/* ============================================================
-   КОНТЕНТ (общий)
-   ============================================================ */
 .screen {
   flex: 1;
   display: flex;
@@ -54,16 +45,12 @@ body {
   display: none;
 }
 
-/* Модификатор: полноэкранный контент (только для feed) */
 .screen--flush {
   padding: 0;
   gap: 0;
   overflow: hidden;
 }
 
-/* ============================================================
-   НИЖНЯЯ НАВИГАЦИЯ
-   ============================================================ */
 .bottom-nav {
   display: flex;
   justify-content: space-between;
@@ -112,9 +99,6 @@ body {
   stroke-linejoin: round;
 }
 
-/* ============================================================
-   PAGE 1: FEED
-   ============================================================ */
 .sign-card {
   position: relative;
   flex: 1;
@@ -166,12 +150,6 @@ body {
   margin-bottom: 8px;
 }
 
-.sign-tags {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
 .tag {
   background: #9e9e9e;
   color: #1a1a1a;
@@ -190,8 +168,9 @@ body {
   position: relative;
 }
 
-/* Плашки выступают над колонкой и не влияют на высоту кнопок */
 .sign-tags {
+  display: flex;
+  flex-wrap: wrap;
   position: absolute;
   left: 0;
   right: 0;
@@ -275,19 +254,37 @@ body {
   stroke-linejoin: round;
 }
 
-/* ============================================================
-   PAGE 2: ФИЛЬТРЫ + СЕТКА
-   ============================================================ */
 .filters {
   display: flex;
   gap: 8px;
   flex-shrink: 0;
   align-items: stretch;
   position: sticky;
-  top: -12px; /* компенсируем padding-top у .screen */
-  z-index: 10;
+  top: -12px;  z-index: 10;
   padding: 12px 0 4px;
   background: #d9d9d9;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1 1 100%;
+  box-sizing: border-box;
+  background: #9e9e9e;
+  border: 2px solid transparent;
+  border-radius: 18px;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #1a1a1a;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #1ca7d2;
+}
+
+.search-input::placeholder {
+  color: #4a4a4a;
 }
 
 .filter {
@@ -360,7 +357,6 @@ body {
   display: block;
 }
 
-/* Сетка карточек — одно длинное полотно */
 .cards-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -368,7 +364,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Карточка — обёртка по содержимому */
 .card {
   background: #d9d9d9;
   border-radius: 18px;
@@ -394,7 +389,6 @@ body {
   transform: scale(0.98);
 }
 
-/* Картинка — пропорция 9:16 */
 .card-img {
   aspect-ratio: 9 / 16;
   width: 100%;
@@ -405,7 +399,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Высокая карточка — картинка в 2 раза выше */
 .card.tall .card-img {
   aspect-ratio: 9 / 32;
 }
@@ -417,6 +410,7 @@ body {
   right: 8px;
   display: flex;
   justify-content: space-between;
+  z-index: 1;
 }
 
 .badge {
@@ -459,9 +453,6 @@ body {
   padding: 30px 0;
 }
 
-/* ============================================================
-   PAGE 3: ADD / ФОРМА
-   ============================================================ */
 .detail-header {
   background: #9e9e9e;
   border-radius: 18px;
@@ -570,12 +561,17 @@ body {
 
 .add-bar {
   flex-shrink: 0;
+  margin-top: auto;
+  align-self: stretch;
+  display: flex;
+  justify-content: flex-end;
   padding: 4px 0 12px;
   background: transparent;
 }
 
 .detail-btn {
-  width: 100%;
+  width: auto;
+  min-width: 140px;
   background: #9e9e9e;
   border: 2px solid #1ca7d2;
   border-radius: 18px;
@@ -596,7 +592,6 @@ body {
   color: #fff;
 }
 
-/* Слайдер диапазона с двумя ползунками */
 .range {
   flex: 1;
   min-width: 0;
@@ -676,4 +671,48 @@ body {
   background: #fff;
   border: 2px solid #1ca7d2;
   cursor: pointer;
+}
+
+.card-link {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-img-el {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-delete {
+  position: absolute;
+  top: 42px;
+  right: 8px;
+  margin: 0;
+  z-index: 2;
+}
+
+.badge.trash {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.badge.trash svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: #1ca7d2;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.badge.trash:hover {
+  background: #fff;
 }

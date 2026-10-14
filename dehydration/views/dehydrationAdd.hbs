@@ -4,21 +4,16 @@
 <body>
 <div class="phone">
   <div class="screen">
-    <!-- Скроллящаяся область с формой -->
-    <form class="detail-body" action="/add" method="post" onsubmit="return false;">
+    <form
+      id="add-form"
+      class="detail-body"
+      method="post"
+      action="{{#if draft}}/dehydration/publish{{else}}/dehydration/add{{/if}}"
+    >
+      {{#if draft}}<input type="hidden" name="id" value="{{draft.id}}" />{{/if}}
 
-      <!-- Название -->
-      <input
-        type="text"
-        class="detail-input"
-        name="title"
-        placeholder="Название"
-        value="{{draft.title}}"
-      />
-
-      <!-- Кнопки добавления медиа -->
       <label class="media-btn">
-        <input type="file" name="video" accept="video/*" />
+        <input type="file" accept="video/*" {{#unless draft}}required{{/unless}} />
         <span>Видео</span>
         <span class="media-plus">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
@@ -26,40 +21,57 @@
       </label>
 
       <label class="media-btn">
-        <input type="file" name="photo" accept="image/*" />
+        <input type="file" accept="image/*" {{#unless draft}}required{{/unless}} />
         <span>Фото</span>
         <span class="media-plus">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         </span>
       </label>
 
-      <!-- Описание -->
+      <input
+        type="text"
+        class="detail-input"
+        name="title"
+        placeholder="Название"
+        value="{{draft.title}}"
+        required
+      />
+
+      {{#if draft}}
       <textarea
         class="detail-input detail-textarea"
         name="description"
-        placeholder="Описание"
+        placeholder="Краткая информация"
+        required
       >{{draft.description}}</textarea>
 
-      <!-- Показатель -->
       <input
         type="number"
         class="detail-input"
         name="dehydratingCoefficient"
         placeholder="Коэффициент обезвоживания"
         value="{{draft.dehydratingCoefficient}}"
+        min="0"
+        required
       />
 
-      <!-- Цена -->
       <input
         type="number"
         class="detail-input"
         name="maxDehydratingCoefficient"
         placeholder="Максимальный коэффициент"
         value="{{draft.maxDehydratingCoefficient}}"
+        min="0"
+        required
       />
-
+      {{/if}}
     </form>
 
+    <div class="add-bar">
+      <button type="submit" form="add-form" class="detail-btn">
+        {{#if draft}}Опубликовать{{else}}Далее{{/if}}
+      </button>
+    </div>
   </div>
 
   {{> dehydrationNav}}

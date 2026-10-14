@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: labs
+      POSTGRES_DB: dehydration_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - /home/arrgn/data/dehydration_data:/var/lib/postgresql/
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres

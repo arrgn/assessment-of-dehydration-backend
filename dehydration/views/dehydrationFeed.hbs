@@ -5,7 +5,6 @@
   <div class="screen screen--flush">
 
     <article class="sign-card">
-      <!-- Автовоспроизведение видео -->
       <video
         class="sign-video"
         src="{{vidSrc}}"
@@ -15,29 +14,33 @@
         loop
         playsinline
         preload="auto"
+        onerror="this.onerror=null;this.src='{{defaultVidSrc}}';this.poster='{{defaultImgSrc}}';"
       ></video>
 
       <div class="sign-bottom">
-      <!-- Оверлей с данными -->
+      {{#if sign}}
       <div class="sign-info">
         <h2>{{sign.title}}</h2>
         <p>{{sign.description}}</p>
       </div>
+      {{/if}}
 
-      <!-- Кнопки справа -->
       <div class="sign-actions">
+        {{#if sign}}
         <div class="sign-tags">
           <span class="tag" title="Коэффициент обезвоживания"><span>💧</span><span>{{sign.dehydratingCoefficient}}</span></span>
           <span class="tag" title="Максимальный коэффициент обезвоживания"><span>🔺</span><span>{{sign.maxDehydratingCoefficient}}</span></span>
         </div>
+        {{/if}}
 
+        {{#if sign}}
         <button class="icon-btn heart{{#if liked}} liked{{/if}}" type="button" aria-label="В избранное">
           <svg viewBox="0 0 24 24" width="22" height="22">
             <path d="M12 21s-8-5.5-8-11a5 5 0 0110-1 5 5 0 0110 1c0 5.5-8 11-8 11z"/>
           </svg>
         </button>
+        {{/if}}
 
-        <!-- Стрелка ведёт на nextUrl -->
         <a class="icon-btn arrow" href="{{nextUrl}}" aria-label="Следующая запись">
           <svg viewBox="0 0 24 24" width="22" height="22">
             <path d="M12 5v14M5 12l7 7 7-7"/>

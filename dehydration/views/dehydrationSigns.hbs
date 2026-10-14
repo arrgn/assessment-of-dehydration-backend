@@ -5,8 +5,14 @@
 <div class="phone">
   <div class="screen">
 
-    <!-- Фильтры — редактируемые поля -->
     <form class="filters" method="get" action="/dehydration/signs">
+      <input
+        type="search"
+        class="search-input"
+        name="search"
+        placeholder="Поиск по названию"
+        value="{{search}}"
+      />
       <div class="range">
         <div class="range-label">
           <span>💧 {{filters.min}}</span>
@@ -25,23 +31,32 @@
       </button>
     </form>
 
-    <!-- Сетка карточек -->
     <div class="cards-grid">
       {{#each signs}}
-        <a class="card {{#if this.tall}}tall{{/if}}" href="/dehydration/feed/{{this.id}}">
-          <div class="card-img" style="background-image:url('{{this.imgSrc}}')">
-            <div class="card-badges">
-              <span class="badge price" title="Коэффициент обезвоживания">💧 {{this.dehydratingCoefficient}}</span>
-              <span class="badge like">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 21s-8-5.5-8-11a5 5 0 0110-1 5 5 0 0110 1c0 5.5-8 11-8 11z"/>
-                </svg>
-                {{this.likes}}
-              </span>
+        <div class="card {{#if this.tall}}tall{{/if}}">
+          <a class="card-link" href="/dehydration/feed/{{this.id}}">
+            <div class="card-img">
+              <img class="card-img-el" src="{{this.imgSrc}}" alt="" onerror="this.onerror=null;this.src='{{../defaultImgSrc}}';" />
+              <div class="card-badges">
+                <span class="badge price" title="Коэффициент обезвоживания">💧 {{this.dehydratingCoefficient}}</span>
+                <span class="badge like">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 21s-8-5.5-8-11a5 5 0 0110-1 5 5 0 0110 1c0 5.5-8 11-8 11z"/>
+                  </svg>
+                  {{this.likesCount}}
+                </span>
+              </div>
             </div>
-          </div>
-          <div class="card-title">{{this.title}}</div>
-        </a>
+            <div class="card-title">{{this.title}}</div>
+          </a>
+          <form class="card-delete" method="post" action="/dehydration/delete/{{this.id}}">
+            <button type="submit" class="badge trash" aria-label="Удалить" title="Удалить">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>
+              </svg>
+            </button>
+          </form>
+        </div>
       {{else}}
         <p class="cards-empty">Ничего не найдено</p>
       {{/each}}
