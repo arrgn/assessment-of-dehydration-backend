@@ -1,5 +1,5 @@
 <html lang='ru'>
-{{> head}}
+{{> dehydrationHead}}
 <body>
 <div class="phone">
   <div class="screen screen--flush">
@@ -22,15 +22,16 @@
       <div class="sign-info">
         <h2>{{sign.title}}</h2>
         <p>{{sign.description}}</p>
-        <div class="sign-tags">
-          <span class="tag">Показатель: {{sign.power}}</span>
-          <span class="tag">Цена: {{sign.price}} руб.</span>
-        </div>
       </div>
 
       <!-- Кнопки справа -->
       <div class="sign-actions">
-        <button class="icon-btn heart" type="button" aria-label="В избранное">
+        <div class="sign-tags">
+          <span class="tag" title="Коэффициент обезвоживания"><span>💧</span><span>{{sign.dehydratingCoefficient}}</span></span>
+          <span class="tag" title="Максимальный коэффициент обезвоживания"><span>🔺</span><span>{{sign.maxDehydratingCoefficient}}</span></span>
+        </div>
+
+        <button class="icon-btn heart{{#if liked}} liked{{/if}}" type="button" aria-label="В избранное">
           <svg viewBox="0 0 24 24" width="22" height="22">
             <path d="M12 21s-8-5.5-8-11a5 5 0 0110-1 5 5 0 0110 1c0 5.5-8 11-8 11z"/>
           </svg>
@@ -48,7 +49,7 @@
 
   </div>
 
-  {{> nav}}
+  {{> dehydrationNav}}
 </div>
 </body>
 </html>

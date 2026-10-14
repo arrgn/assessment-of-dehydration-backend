@@ -1,28 +1,23 @@
 <!DOCTYPE html>
 <html lang="ru">
-{{> head}}
+{{> dehydrationHead}}
 <body>
 <div class="phone">
   <div class="screen">
 
     <!-- Фильтры — редактируемые поля -->
     <form class="filters" method="get" action="/dehydration/signs">
-      <input
-        type="number"
-        class="filter"
-        name="min"
-        placeholder="Цена от"
-        value="{{filters.min}}"
-        min="0"
-      />
-      <input
-        type="number"
-        class="filter"
-        name="max"
-        placeholder="Цена до"
-        value="{{filters.max}}"
-        min="0"
-      />
+      <div class="range">
+        <div class="range-label">
+          <span>💧 {{filters.min}}</span>
+          <span>💧 {{filters.max}}</span>
+        </div>
+        <div class="range-track">
+          <div class="range-fill" style="left:{{filters.fillLeft}}%;right:{{filters.fillRight}}%"></div>
+          <input type="range" name="min" min="0" max="{{filters.sliderMax}}" step="1" value="{{filters.min}}" aria-label="Коэффициент от" />
+          <input type="range" name="max" min="0" max="{{filters.sliderMax}}" step="1" value="{{filters.max}}" aria-label="Коэффициент до" />
+        </div>
+      </div>
       <button type="submit" class="filter-btn" aria-label="Применить фильтр">
         <svg viewBox="0 0 24 24">
           <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -36,7 +31,7 @@
         <a class="card {{#if this.tall}}tall{{/if}}" href="/dehydration/feed/{{this.id}}">
           <div class="card-img" style="background-image:url('{{this.imgSrc}}')">
             <div class="card-badges">
-              <span class="badge price">{{this.price}}₽</span>
+              <span class="badge price" title="Коэффициент обезвоживания">💧 {{this.dehydratingCoefficient}}</span>
               <span class="badge like">
                 <svg viewBox="0 0 24 24">
                   <path d="M12 21s-8-5.5-8-11a5 5 0 0110-1 5 5 0 0110 1c0 5.5-8 11-8 11z"/>
@@ -54,7 +49,7 @@
 
   </div>
 
-  {{> nav}}
+  {{> dehydrationNav}}
 </div>
 </body>
 </html>

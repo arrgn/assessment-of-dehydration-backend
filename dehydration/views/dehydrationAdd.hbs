@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
-{{> head}}
+{{> dehydrationHead}}
 <body>
 <div class="phone">
   <div class="screen">
@@ -17,19 +17,21 @@
       />
 
       <!-- Кнопки добавления медиа -->
-      <button type="button" class="media-btn">
+      <label class="media-btn">
+        <input type="file" name="video" accept="video/*" />
         <span>Видео</span>
         <span class="media-plus">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         </span>
-      </button>
+      </label>
 
-      <button type="button" class="media-btn">
+      <label class="media-btn">
+        <input type="file" name="photo" accept="image/*" />
         <span>Фото</span>
         <span class="media-plus">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         </span>
-      </button>
+      </label>
 
       <!-- Описание -->
       <textarea
@@ -40,34 +42,27 @@
 
       <!-- Показатель -->
       <input
-        type="text"
+        type="number"
         class="detail-input"
-        name="power"
-        placeholder="Показатель"
-        value="{{draft.power}}"
+        name="dehydratingCoefficient"
+        placeholder="Коэффициент обезвоживания"
+        value="{{draft.dehydratingCoefficient}}"
       />
 
       <!-- Цена -->
       <input
-        type="text"
+        type="number"
         class="detail-input"
-        name="price"
-        placeholder="Цена"
-        value="{{draft.price}}"
+        name="maxDehydratingCoefficient"
+        placeholder="Максимальный коэффициент"
+        value="{{draft.maxDehydratingCoefficient}}"
       />
 
     </form>
 
-    <!-- Кнопка "Добавить" -->
-    <div class="add-bar">
-      <button type="button" class="detail-btn">
-        Добавить
-      </button>
-    </div>
-
   </div>
 
-  {{> nav}}
+  {{> dehydrationNav}}
 </div>
 </body>
 </html>
