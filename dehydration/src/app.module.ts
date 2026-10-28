@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DehydrationModule } from './dehydration/dehydration.module';
+import { MinioModule } from './minio/minio.module';
+import { SignsModule } from './signs/signs.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,7 +22,9 @@ import { DehydrationModule } from './dehydration/dehydration.module';
         synchronize: false,
       }),
     }),
-    DehydrationModule,
+    MinioModule,
+    SignsModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],

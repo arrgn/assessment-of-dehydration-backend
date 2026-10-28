@@ -1,0 +1,352 @@
+{
+  "info": {
+    "name": "Dehydration API",
+    "description": "Лабораторная 3. Порядок запросов соответствует порядку показа.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Услуги",
+      "item": [
+        {
+          "name": "1. Список услуг (фильтр)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dehydration/signs?min=0&max=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dehydration",
+                "signs"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "губы",
+                  "disabled": true
+                },
+                {
+                  "key": "min",
+                  "value": "0",
+                  "disabled": false
+                },
+                {
+                  "key": "max",
+                  "value": "10",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "Только опубликованные. isMine 0/1. Уберите галочки с параметров, чтобы отключить фильтр."
+          }
+        },
+        {
+          "name": "2. Лента без id (первая карточка)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dehydration/feed",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dehydration",
+                "feed"
+              ]
+            },
+            "description": "Первая опубликованная карточка, isLiked 0/1."
+          }
+        },
+        {
+          "name": "2. Лента по id (следующая)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dehydration/feed/{{signId}}?next=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dehydration",
+                "feed",
+                "{{signId}}"
+              ],
+              "query": [
+                {
+                  "key": "next",
+                  "value": "true",
+                  "disabled": false
+                }
+              ]
+            },
+            "description": "next=true - следующая после id, после последней - первая. Каждый запуск записывает id полученной карточки в signId, поэтому следующий Send вернёт следующую карточку."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  pm.collectionVariables.set('signId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Получить черновик",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dehydration/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dehydration",
+                "add"
+              ]
+            },
+            "description": "Не более одного черновика у пользователя. 404, если нет."
+          }
+        },
+        {
+          "name": "4. Создать услугу (черновик + файлы)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dehydration/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dehydration",
+                "add"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Сухие губы",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "video",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "description": "Выберите файлы в полях image и video."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  pm.collectionVariables.set('signId', pm.response.json().id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Опубликовать",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dehydration/add",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dehydration",
+                "add"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Сухие губы\",\n  \"description\": \"Краткая информация\",\n  \"dehydratingCoefficient\": 4,\n  \"maxDehydratingCoefficient\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "7. Лайк (like: 1 ставит, 0 снимает)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dehydration/like/{{signId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dehydration",
+                "like",
+                "{{signId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"like\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "6. Удалить (soft delete)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/dehydration/delete/{{signId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dehydration",
+                "delete",
+                "{{signId}}"
+              ]
+            },
+            "description": "Только услуги текущего пользователя. 204."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Пользователи",
+      "item": [
+        {
+          "name": "8. Регистрация",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "register"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Иван\",\n  \"login\": \"ivan\",\n  \"password\": \"secret123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Повторная отправка с тем же логином должна вернуть 409 (логин занят)."
+          }
+        },
+        {
+          "name": "9. Аутентификация (заглушка)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/users/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"login\": \"ivan\",\n  \"password\": \"secret123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "10. Деавторизация (заглушка)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "logout"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    },
+    {
+      "key": "signId",
+      "value": "1"
+    }
+  ]
+}

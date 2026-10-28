@@ -3,7 +3,7 @@ import {
   DehydrationSign,
   User,
   DehydrationLike,
-} from '../src/dehydration/entities/dehydration.entity';
+} from '../src/entities/dehydration.entity';
 
 const dataSource = new DataSource({
   type: 'postgres',

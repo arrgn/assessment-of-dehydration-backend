@@ -24,6 +24,15 @@ export class User {
 
   @Column({ type: 'varchar', length: 255 })
   name: string;
+
+  @Column({ type: 'varchar', length: 64, nullable: true, unique: true })
+  login: string | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  passwordHash: string | null;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: Date;
 }
 
 @Entity('Dehydration_signs')
