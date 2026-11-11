@@ -539,6 +539,15 @@ body {
   background: #8e8e8e;
 }
 
+.media-preview {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .media-plus {
   width: 44px;
   height: 44px;

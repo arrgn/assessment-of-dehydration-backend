@@ -13,16 +13,18 @@
       {{#if draft}}<input type="hidden" name="id" value="{{draft.id}}" />{{/if}}
 
       <label class="media-btn">
-        <input type="file" accept="video/*" {{#unless draft}}required{{/unless}} />
+        <input type="file" accept="video/*" />
         <span>Видео</span>
+        <video class="media-preview" src="{{defaultVidSrc}}" muted preload="metadata"></video>
         <span class="media-plus">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         </span>
       </label>
 
       <label class="media-btn">
-        <input type="file" accept="image/*" {{#unless draft}}required{{/unless}} />
+        <input type="file" accept="image/*" />
         <span>Фото</span>
+        <img class="media-preview" src="{{defaultImgSrc}}" alt="Фото по умолчанию" />
         <span class="media-plus">
           <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
         </span>

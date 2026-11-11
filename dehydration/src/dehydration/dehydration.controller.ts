@@ -72,7 +72,11 @@ export class DehydrationController {
       this.currentUserId,
     );
 
-    return { draft };
+    return {
+      draft,
+      defaultVidSrc: this.defaultVidSrc,
+      defaultImgSrc: this.defaultImgSrc,
+    };
   }
 
   @Post('add')
