@@ -22,7 +22,6 @@ export type SignFeedItem = SignResponse & { isLiked: 0 | 1 };
 
 export interface SignList {
   signs: SignListItem[];
-  filters: { min: number; max: number; sliderMax: number };
 }
 
 export interface LikeResult {

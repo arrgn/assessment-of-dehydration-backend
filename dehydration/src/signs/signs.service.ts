@@ -71,7 +71,6 @@ export class SignsService {
         isMine: sign.creatorId === userId ? 1 : 0,
         likesCount: sign.likes.length,
       })),
-      filters: { min, max, sliderMax },
     };
   }
 
