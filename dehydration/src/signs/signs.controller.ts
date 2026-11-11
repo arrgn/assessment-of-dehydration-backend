@@ -11,11 +11,22 @@ import {
   Put,
   Query,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiCookieAuth,
+  ApiOperation,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
-import { getCurrentUser } from '../common/current-user';
+import { type AuthUser, CurrentUser } from '../auth/auth-user';
+import { OptionalSessionGuard, SessionGuard } from '../auth/session.guard';
+import { SESSION_COOKIE } from '../auth/session.service';
 import { CreateSignDto } from './dto/create-sign.dto';
 import { LikeSignDto } from './dto/like-sign.dto';
 import { PublishSignDto } from './dto/publish-sign.dto';
@@ -30,29 +41,73 @@ import { SignsService, type SignFiles } from './signs.service';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
+@ApiTags('Услуги')
 @Controller('dehydration')
 export class SignsController {
   constructor(private readonly signsService: SignsService) {}
 
   @Get('signs')
-  getSigns(@Query() filters: SignFiltersDto): Promise<SignList> {
-    return this.signsService.getSigns(getCurrentUser().id, filters);
+  @UseGuards(OptionalSessionGuard)
+  @ApiOperation({
+    summary: 'Список услуг',
+    description:
+      'Опубликованные услуги с фильтрами search/min/max. Доступно гостям; для авторизованных isMine отмечает свои услуги.',
+  })
+  getSigns(
+    @Query() filters: SignFiltersDto,
+    @CurrentUser() user?: AuthUser,
+  ): Promise<SignList> {
+    return this.signsService.getSigns(user?.id, filters);
   }
 
   @Get(['feed', 'feed/:id'])
+  @UseGuards(OptionalSessionGuard)
+  @ApiOperation({
+    summary: 'Лента услуг',
+    description:
+      'Без id — первая карточка; с id — карточка с этим id, а с `?next=true` — следующая за ним. Доступно гостям.',
+  })
   getFeedCard(
     @Param('id', new ParseIntPipe({ optional: true })) id?: number,
     @Query('next', new ParseBoolPipe({ optional: true })) next?: boolean,
+    @CurrentUser() user?: AuthUser,
   ): Promise<SignFeedItem> {
-    return this.signsService.getFeedCard(getCurrentUser().id, id, next);
+    return this.signsService.getFeedCard(user?.id, id, next);
   }
 
   @Get('add')
-  getDraft(): Promise<SignResponse> {
-    return this.signsService.getDraft(getCurrentUser().id);
+  @UseGuards(SessionGuard)
+  @ApiCookieAuth(SESSION_COOKIE)
+  @ApiUnauthorizedResponse({ description: 'Требуется авторизация' })
+  @ApiOperation({
+    summary: 'Получить черновик',
+    description: 'Черновик текущего пользователя (создателя).',
+  })
+  getDraft(@CurrentUser() user: AuthUser): Promise<SignResponse> {
+    return this.signsService.getDraft(user.id);
   }
 
   @Post('add')
+  @UseGuards(SessionGuard)
+  @ApiCookieAuth(SESSION_COOKIE)
+  @ApiUnauthorizedResponse({ description: 'Требуется авторизация' })
+  @ApiOperation({
+    summary: 'Создать черновик услуги',
+    description:
+      'Создаёт черновик с картинкой и видео. Создатель подставляется автоматически из сессии.',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['title', 'image', 'video'],
+      properties: {
+        title: { type: 'string', example: 'Сухие губы' },
+        image: { type: 'string', format: 'binary' },
+        video: { type: 'string', format: 'binary' },
+      },
+    },
+  })
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -65,27 +120,57 @@ export class SignsController {
   createDraft(
     @Body() dto: CreateSignDto,
     @UploadedFiles() files: SignFiles,
+    @CurrentUser() user: AuthUser,
   ): Promise<SignResponse> {
-    return this.signsService.createDraft(getCurrentUser().id, dto.title, files);
+    return this.signsService.createDraft(user.id, dto.title, files);
   }
 
   @Put('add')
-  publish(@Body() dto: PublishSignDto): Promise<SignResponse> {
-    return this.signsService.publish(getCurrentUser().id, dto);
+  @UseGuards(SessionGuard)
+  @ApiCookieAuth(SESSION_COOKIE)
+  @ApiUnauthorizedResponse({ description: 'Требуется авторизация' })
+  @ApiOperation({
+    summary: 'Опубликовать услугу',
+    description:
+      'Заполняет поля черновика текущего пользователя и публикует его.',
+  })
+  publish(
+    @Body() dto: PublishSignDto,
+    @CurrentUser() user: AuthUser,
+  ): Promise<SignResponse> {
+    return this.signsService.publish(user.id, dto);
   }
 
   @Delete('delete/:id')
   @HttpCode(204)
-  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.signsService.remove(id, getCurrentUser().id);
+  @UseGuards(SessionGuard)
+  @ApiCookieAuth(SESSION_COOKIE)
+  @ApiUnauthorizedResponse({ description: 'Требуется авторизация' })
+  @ApiOperation({
+    summary: 'Удалить услугу',
+    description: 'Помечает свою услугу удалённой (только создатель).',
+  })
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: AuthUser,
+  ): Promise<void> {
+    return this.signsService.remove(id, user.id);
   }
 
   @Post('like/:id')
   @HttpCode(200)
+  @UseGuards(SessionGuard)
+  @ApiCookieAuth(SESSION_COOKIE)
+  @ApiUnauthorizedResponse({ description: 'Требуется авторизация' })
+  @ApiOperation({
+    summary: 'Поставить/снять лайк',
+    description: 'like=1 — поставить, like=0 — снять.',
+  })
   setLike(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: LikeSignDto,
+    @CurrentUser() user: AuthUser,
   ): Promise<LikeResult> {
-    return this.signsService.setLike(id, getCurrentUser().id, dto);
+    return this.signsService.setLike(id, user.id, dto);
   }
 }

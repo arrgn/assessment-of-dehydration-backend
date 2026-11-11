@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsNotEmpty,
@@ -11,12 +12,17 @@ const trim = ({ value }: { value: unknown }) =>
   typeof value === 'string' ? value.trim() : value;
 
 export class RegisterUserDto {
+  @ApiProperty({ description: 'Имя', example: 'Иван' })
   @Transform(trim)
   @IsString()
   @IsNotEmpty({ message: 'Имя обязательно' })
   @MaxLength(255)
   name: string;
 
+  @ApiProperty({
+    description: 'Логин (латиница, цифры, _ . -)',
+    example: 'ivan',
+  })
   @Transform(trim)
   @IsString()
   @MinLength(3)
@@ -26,6 +32,7 @@ export class RegisterUserDto {
   })
   login: string;
 
+  @ApiProperty({ description: 'Пароль, от 6 символов', example: 'secret123' })
   @IsString()
   @MinLength(6, { message: 'Пароль должен быть не короче 6 символов' })
   @MaxLength(128)

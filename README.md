@@ -121,8 +121,8 @@ Query-параметры (все необязательные):
 | # | Метод | URL | Описание |
 |---|---|---|---|
 | 8 | POST | `/api/users/register` | регистрация |
-| 9 | POST | `/api/users/login` | аутентификация (заглушка для лабораторной 4) |
-| 10 | POST | `/api/users/logout` | деавторизация (заглушка для лабораторной 4) |
+| 9 | POST | `/api/users/login` | аутентификация: сессия в Redis + кука `sessionId` |
+| 10 | POST | `/api/users/logout` | деавторизация: удаление сессии (нужна авторизация) |
 
 #### 8. POST `/api/users/register`
 
@@ -140,7 +140,11 @@ Query-параметры (все необязательные):
 
 #### 9-10. POST `/api/users/login`, `/api/users/logout`
 
-Заглушки, ответ `200` с полем `message`. `login` принимает тело `{ "login": "...", "password": "..." }`, `logout` - без тела.
+`login` принимает `{ "login": "...", "password": "..." }`, проверяет хеш пароля, создаёт в Redis ключ `session:<uuid>` -> `userId` (TTL 1 час) и устанавливает HttpOnly-куку `sessionId`; ответ `200` - данные пользователя, `401` - неверные данные. `logout` без тела удаляет сессию и куку, `401` без сессии.
+
+#### Авторизация и Swagger
+
+Swagger UI: `http://localhost:3000/api/docs`. Без авторизации доступны только методы чтения (`GET /dehydration/signs`, `GET /dehydration/feed[/:id]`); методы создателя (`GET/POST/PUT /dehydration/add`, `DELETE /dehydration/delete/:id`, `POST /dehydration/like/:id`) требуют куку `sessionId`, иначе `401`. Создатель услуги подставляется автоматически из сессии. Redis: `REDIS_HOST`, `REDIS_PORT` в `.env` (сервис `redis` в `docker-compose.yml`); проверка: `docker exec redis_sessions redis-cli keys 'session:*'`.
 
 ## Таблицы БД
 

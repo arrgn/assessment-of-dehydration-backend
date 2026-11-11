@@ -12,6 +12,13 @@ services:
     volumes:
       - /home/arrgn/data/dehydration_data:/var/lib/postgresql/
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis_sessions
+    restart: always
+    ports:
+      - "6379:6379"
+
   adminer:
     image: adminer:latest
     container_name: adminer

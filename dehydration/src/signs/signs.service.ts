@@ -45,7 +45,10 @@ export class SignsService {
     private readonly minio: MinioService,
   ) {}
 
-  async getSigns(userId: number, filters: SignFiltersDto): Promise<SignList> {
+  async getSigns(
+    userId: number | undefined,
+    filters: SignFiltersDto,
+  ): Promise<SignList> {
     const search = filters.search?.trim() || undefined;
     const sliderMax = await this.getMaxCoefficient(search);
     const clamp = (n: number) => Math.min(Math.max(n, 0), sliderMax);
@@ -75,17 +78,16 @@ export class SignsService {
   }
 
   async getFeedCard(
-    userId: number,
+    userId: number | undefined,
     fromId?: number,
     next = false,
   ): Promise<SignFeedItem> {
     const sign = await this.findFeedSign(fromId, next);
     if (!sign) throw new NotFoundException('Лента пуста');
 
-    const liked = await this.likeRepository.existsBy({
-      userId,
-      signId: sign.id,
-    });
+    const liked =
+      userId !== undefined &&
+      (await this.likeRepository.existsBy({ userId, signId: sign.id }));
     return { ...this.toResponse(sign), isLiked: liked ? 1 : 0 };
   }
 

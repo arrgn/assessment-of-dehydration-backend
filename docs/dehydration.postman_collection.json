@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Dehydration API",
-    "description": "Лабораторная 3. Порядок запросов соответствует порядку показа.",
+    "description": "Лабораторная 4. Авторизация через сессии в Redis и куку sessionId. Сначала выполните «Аутентификация» - sessionId сохранится в переменную коллекции. Чтение (GET signs, feed) доступно без куки; методы создателя без куки возвращают 401.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -104,7 +104,13 @@
           "name": "3. Получить черновик",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "sessionId={{sessionId}}",
+                "description": "Снимите галочку, чтобы выполнить запрос как гость (ожидается 401)."
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/dehydration/add",
               "host": [
@@ -115,14 +121,20 @@
                 "add"
               ]
             },
-            "description": "Не более одного черновика у пользователя. 404, если нет."
+            "description": "Не более одного черновика у пользователя. 404, если нет. Требуется авторизация (кука sessionId), без неё 401."
           }
         },
         {
           "name": "4. Создать услугу (черновик + файлы)",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "sessionId={{sessionId}}",
+                "description": "Снимите галочку, чтобы выполнить запрос как гость (ожидается 401)."
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/dehydration/add",
               "host": [
@@ -153,7 +165,7 @@
                 }
               ]
             },
-            "description": "Выберите файлы в полях image и video."
+            "description": "Выберите файлы в полях image и video. Требуется авторизация (кука sessionId), без неё 401."
           },
           "event": [
             {
@@ -177,6 +189,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "sessionId={{sessionId}}",
+                "description": "Снимите галочку, чтобы выполнить запрос как гость (ожидается 401)."
               }
             ],
             "url": {
@@ -197,7 +214,8 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Требуется авторизация (кука sessionId), без неё 401."
           }
         },
         {
@@ -208,6 +226,11 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Cookie",
+                "value": "sessionId={{sessionId}}",
+                "description": "Снимите галочку, чтобы выполнить запрос как гость (ожидается 401)."
               }
             ],
             "url": {
@@ -229,14 +252,21 @@
                   "language": "json"
                 }
               }
-            }
+            },
+            "description": "Требуется авторизация (кука sessionId), без неё 401."
           }
         },
         {
           "name": "6. Удалить (soft delete)",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "sessionId={{sessionId}}",
+                "description": "Снимите галочку, чтобы выполнить запрос как гость (ожидается 401)."
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/dehydration/delete/{{signId}}",
               "host": [
@@ -248,7 +278,7 @@
                 "{{signId}}"
               ]
             },
-            "description": "Только услуги текущего пользователя. 204."
+            "description": "Только услуги текущего пользователя. 204. Требуется авторизация (кука sessionId), без неё 401."
           }
         }
       ]
@@ -289,7 +319,7 @@
           }
         },
         {
-          "name": "9. Аутентификация (заглушка)",
+          "name": "9. Аутентификация (сессия + кука)",
           "request": {
             "method": "POST",
             "header": [
@@ -316,14 +346,34 @@
                   "language": "json"
                 }
               }
+            },
+            "description": "Проверяет логин/пароль, создаёт сессию в Redis и ставит HttpOnly-куку sessionId. Значение куки сохраняется в переменную sessionId. 401 при неверных данных."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const id = pm.cookies.get('sessionId');",
+                  "if (id) { pm.collectionVariables.set('sessionId', id); }",
+                  "pm.test('login 200', () => pm.response.to.have.status(200));"
+                ]
+              }
             }
-          }
+          ]
         },
         {
-          "name": "10. Деавторизация (заглушка)",
+          "name": "10. Деавторизация (удаляет сессию)",
           "request": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "sessionId={{sessionId}}",
+                "description": "Снимите галочку, чтобы выполнить запрос как гость (ожидается 401)."
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/users/logout",
               "host": [
@@ -333,8 +383,20 @@
                 "users",
                 "logout"
               ]
+            },
+            "description": "Требуется авторизация (кука sessionId), без неё 401."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 200) { pm.collectionVariables.set('sessionId', ''); }"
+                ]
+              }
             }
-          }
+          ]
         }
       ]
     }
@@ -347,6 +409,10 @@
     {
       "key": "signId",
       "value": "1"
+    },
+    {
+      "key": "sessionId",
+      "value": ""
     }
   ]
 }
