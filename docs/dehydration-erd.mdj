@@ -8428,6 +8428,88 @@
 					]
 				}
 			]
+		},
+		{
+			"_type": "UMLCollaboration",
+			"_id": "AAAAAAGhyoCdGFkortY=",
+			"_parent": {
+				"$ref": "2bfffaf822a24a8d971861=="
+			},
+			"name": "Collaboration1",
+			"ownedElements": [
+				{
+					"_type": "UMLInteraction",
+					"_id": "AAAAAAGhyoCdGVkpYXY=",
+					"_parent": {
+						"$ref": "AAAAAAGhyoCdGFkortY="
+					},
+					"name": "Interaction1",
+					"ownedElements": [
+						{
+							"_type": "UMLSequenceDiagram",
+							"_id": "AAAAAAGhyoCdGVkqRp0=",
+							"_parent": {
+								"$ref": "AAAAAAGhyoCdGVkpYXY="
+							},
+							"name": "SequenceDiagram1",
+							"ownedViews": [
+								{
+									"_type": "UMLFrameView",
+									"_id": "AAAAAAGhyoCdGVkrAJ0=",
+									"_parent": {
+										"$ref": "AAAAAAGhyoCdGVkqRp0="
+									},
+									"model": {
+										"$ref": "AAAAAAGhyoCdGVkqRp0="
+									},
+									"subViews": [
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAGhyoCdGVkspQk=",
+											"_parent": {
+												"$ref": "AAAAAAGhyoCdGVkrAJ0="
+											},
+											"font": "Arial;13;0",
+											"parentStyle": true,
+											"left": 32.72998046875,
+											"top": 13,
+											"width": 67.9326171875,
+											"height": 13,
+											"text": "Interaction1"
+										},
+										{
+											"_type": "LabelView",
+											"_id": "AAAAAAGhyoCdGVktL0Y=",
+											"_parent": {
+												"$ref": "AAAAAAGhyoCdGVkrAJ0="
+											},
+											"font": "Arial;13;1",
+											"parentStyle": true,
+											"left": 13,
+											"top": 13,
+											"width": 13.72998046875,
+											"height": 13,
+											"text": "sd"
+										}
+									],
+									"font": "Arial;13;0",
+									"parentStyle": false,
+									"left": 8,
+									"top": 8,
+									"width": 692,
+									"height": 592,
+									"nameLabel": {
+										"$ref": "AAAAAAGhyoCdGVkspQk="
+									},
+									"frameTypeLabel": {
+										"$ref": "AAAAAAGhyoCdGVktL0Y="
+									}
+								}
+							]
+						}
+					]
+				}
+			]
 		}
 	],
 	"documentVersion": 1

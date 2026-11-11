@@ -190,7 +190,7 @@ Swagger UI: `http://localhost:3000/api/docs`. Без авторизации до
 
 ```text
 dehydration/src/
-├── common/current-user.ts      # singleton текущего пользователя
+├── auth/                       # сессии в Redis, guard-ы, декоратор CurrentUser
 ├── entities/                   # User, DehydrationSign, DehydrationLike
 ├── minio/                      # загрузка файлов и ссылки на медиа
 ├── signs/                      # домен услуг: controller, service, dto
